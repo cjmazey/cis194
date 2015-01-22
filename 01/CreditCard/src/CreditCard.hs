@@ -11,15 +11,7 @@ toDigitsRev :: Integer -> [Integer]
 toDigitsRev = reverse . toDigits
 
 doubleEveryOther :: [Integer] -> [Integer]
-doubleEveryOther = aux [] . reverse
-  where
-    aux acc [] = acc
-    aux acc (x : xs) = aux' (x : acc) xs
-    aux' acc [] = acc
-    aux' acc (x : xs) = aux (2 * x : acc) xs
-
-dEO :: [Integer] -> [Integer]
-dEO xs = zipWith (*) xs ys
+doubleEveryOther xs = zipWith (*) xs ys
   where ys = if even $ length xs
              then cycle [2,1]
              else cycle [1,2]
