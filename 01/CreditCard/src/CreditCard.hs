@@ -10,14 +10,19 @@ toDigits i
 toDigitsRev :: Integer -> [Integer]
 toDigitsRev = reverse . toDigits
 
-doubleEveryOtherRev :: [Integer] -> [Integer]
-doubleEveryOtherRev [] = []
-doubleEveryOtherRev [x] = [x]
-doubleEveryOtherRev (x : x' : xs) =
-  x : 2 * x' : doubleEveryOtherRev xs
-
 doubleEveryOther :: [Integer] -> [Integer]
-doubleEveryOther = reverse . doubleEveryOtherRev . reverse
+doubleEveryOther = aux [] . reverse
+  where
+    aux acc [] = acc
+    aux acc (x : xs) = aux' (x : acc) xs
+    aux' acc [] = acc
+    aux' acc (x : xs) = aux (2 * x : acc) xs
+
+dEO :: [Integer] -> [Integer]
+dEO xs = zipWith (*) xs ys
+  where ys = if even $ length xs
+             then cycle [2,1]
+             else cycle [1,2]
 
 sumDigits :: [Integer] -> Integer
 sumDigits = sum . concatMap toDigits
