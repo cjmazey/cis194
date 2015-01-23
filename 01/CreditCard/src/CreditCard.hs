@@ -21,3 +21,4 @@ sumDigits = sum . concatMap toDigits
 
 validate :: Integer -> Bool
 validate = (0 ==) . (`rem` 10) . sumDigits . doubleEveryOther . toDigits
+
