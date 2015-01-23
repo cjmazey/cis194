@@ -13,8 +13,8 @@ toDigitsRev = reverse . toDigits
 doubleEveryOther :: [Integer] -> [Integer]
 doubleEveryOther xs = zipWith (*) xs ys
   where ys = if even $ length xs
-             then cycle [2,1]
-             else cycle [1,2]
+               then cycle [2,1]
+               else cycle [1,2]
 
 sumDigits :: [Integer] -> Integer
 sumDigits = sum . concatMap toDigits
