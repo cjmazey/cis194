@@ -19,7 +19,7 @@ data-dir: data
 
 library
   exposed-modules:     LogAnalysis
-  -- other-modules:       
+  other-modules:       Paths_LogAnalysis
   -- other-extensions:    
   build-depends:       base >=4.7 && <4.8,
                        Log
