@@ -1,9 +1,9 @@
 module Main where
 
-import HanoiG
+import           HanoiG
 
-import Test.Tasty
-import Test.Tasty.HUnit
+import           Test.Tasty
+import           Test.Tasty.HUnit
 
 main :: IO ()
 main = defaultMain tests
@@ -15,8 +15,8 @@ unitTests :: TestTree
 unitTests = testGroup "Unit tests" [testHanoi]
 
 testHanoi :: TestTree
-testHanoi = 
-  testGroup "hanoi"
+testHanoi =
+  testGroup "hanoiG"
             [testCase "ex1" $
-             hanoi 2 "a" "b" "c" @=?
-             [("a","c"),("a","b"),("c","b")]]
+             hanoiG 2 ["a", "b", "c"] @=?
+             Just [("a","c"),("a","b"),("c","b")]]
