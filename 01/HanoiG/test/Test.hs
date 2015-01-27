@@ -19,4 +19,7 @@ testHanoi =
   testGroup "hanoiG"
             [testCase "ex1" $
              hanoiG 2 ["a", "b", "c"] @=?
-             Just [("a","c"),("a","b"),("c","b")]]
+             Just [("a","c"),("a","b"),("c","b")],
+             testCase "length" $
+             fmap length (hanoiG 15 ["a", "b", "c", "d"]) @=?
+             Just 129]
