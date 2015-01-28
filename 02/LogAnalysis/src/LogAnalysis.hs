@@ -33,3 +33,22 @@ parseMessage s =
   case parse logMessage "" s of
     Right m -> m
     Left _ -> error "parseMessage"
+
+parseLog :: String -> [LogMessage]
+parseLog s = map parseMessage $ lines s
+
+insert :: LogMessage -> MessageTree -> MessageTree
+insert (Unknown _) m = m
+insert l@(LogMessage _ _ _) Leaf =
+  Node Leaf l Leaf
+insert l@(LogMessage _ t _) (Node ml l'@(LogMessage _ t' _) mr)
+  | t <= t' = Node (insert l ml) l' mr
+  | otherwise = Node ml l' (insert l mr)
+insert _ (Node _ (Unknown _) _) = error "unreachable"
+
+build :: [LogMessage] -> MessageTree
+build = foldl (flip insert) Leaf
+
+inOrder :: MessageTree -> [LogMessage]
+inOrder Leaf = []
+inOrder (Node ml l mr) = inOrder ml ++ [l] ++ inOrder mr
