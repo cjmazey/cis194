@@ -1,33 +1,35 @@
 {-# OPTIONS_GHC -Wall #-}
 
-module LogAnalysis where
+module LogAnalysis (parseMessage) where
 
-import Log
-import Paths_LogAnalysis (getDataFileName)
-import qualified Text.Parsec as P
-import Text.Parsec (Parsec, char, many1, space, digit, try, eof, anyChar)
-import Control.Applicative
+import           Control.Applicative
+import           Log
+import           Paths_LogAnalysis   (getDataFileName)
+import           Text.Parsec         (Parsec, anyChar, char, digit, eof, many1,
+                                      parse, space, try)
 
-whiteSpace :: Parsec String () ()
-whiteSpace = () <$ many1 space
+ws :: Parsec String () ()
+ws = () <$ many1 space
 
 int :: Parsec String () Int
 int = read <$> many1 digit
 
-parseMessageType :: Parsec String () MessageType
-parseMessageType =
+str :: Parsec String () String
+str = many anyChar
+
+messageType :: Parsec String () MessageType
+messageType =
   Info <$ char 'I' <|>
   Warning <$ char 'W' <|>
-  Error <$> (char 'E' *> whiteSpace *> int)
+  Error <$> (char 'E' *> ws *> int)
 
-parseLogMessage :: Parsec String () LogMessage
-parseLogMessage =
-  try (LogMessage <$> parseMessageType <* whiteSpace <*> int <* whiteSpace <*> many anyChar) <|>
-  Unknown <$> many anyChar
+logMessage :: Parsec String () LogMessage
+logMessage =
+  try (LogMessage <$> messageType <* ws <*> int <* (ws <|> eof) <*> str) <|>
+  Unknown <$> str
 
 parseMessage :: String -> LogMessage
 parseMessage s =
-  case P.parse parseLogMessage "" s of
+  case parse logMessage "" s of
     Right m -> m
     Left _ -> error "parseMessage"
-
