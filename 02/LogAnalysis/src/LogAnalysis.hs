@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -Wall #-}
 
-module LogAnalysis (parseMessage, parseLog, insert, build, inOrder, whatWentWrong) where
+module LogAnalysis (parseMessage, parseLog, insert, build, inOrder, whatWentWrong, getDataFileName) where
 
 import           Control.Applicative
 import           Log
