@@ -52,3 +52,13 @@ build = foldl (flip insert) Leaf
 inOrder :: MessageTree -> [LogMessage]
 inOrder Leaf = []
 inOrder (Node ml l mr) = inOrder ml ++ [l] ++ inOrder mr
+
+whatWentWrong :: [LogMessage] -> [String]
+whatWentWrong =
+  (map msg) . inOrder . build . (filter f)
+    where
+      msg (LogMessage _ _ s) = s
+      msg (Unknown _) = error "unreachable"
+      f (LogMessage (Error e) _ _)
+        | e >= 50 = True
+      f _ = False
