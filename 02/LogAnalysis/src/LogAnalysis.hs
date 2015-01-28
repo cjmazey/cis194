@@ -5,29 +5,25 @@ module LogAnalysis where
 import Log
 import Paths_LogAnalysis (getDataFileName)
 import qualified Text.Parsec as P
+import Text.Parsec (Parsec, char, many1, space, digit, try, eof, anyChar)
+import Control.Applicative
 
-parseMessageType :: P.Parsec String () MessageType
-parseMessageType = info P.<|> warning P.<|> error
-  where
-    info    = P.char 'I' >> return Info
-    warning = P.char 'W' >> return Warning
-    error   = do P.char 'E'
-                 P.many1 P.space
-                 digits <- P.many1 P.digit
-                 return $ Error (read digits)
+whiteSpace :: Parsec String () ()
+whiteSpace = () <$ many1 space
 
-parseLogMessage :: P.Parsec String () LogMessage
-parseLogMessage = P.try logMessage P.<|> unknown
-  where
-    logMessage = do messageType <- parseMessageType
-                    P.many1 P.space
-                    timeStamp <- do digits <- P.many1 P.digit
-                                    return (read digits)
-                    (P.many1 P.space >> return ()) P.<|> P.eof
-                    string <- P.many P.anyChar
-                    return $ LogMessage messageType timeStamp string
-    unknown = do string <- P.many P.anyChar
-                 return $ Unknown string
+int :: Parsec String () Int
+int = read <$> many1 digit
+
+parseMessageType :: Parsec String () MessageType
+parseMessageType =
+  Info <$ char 'I' <|>
+  Warning <$ char 'W' <|>
+  Error <$> (char 'E' *> whiteSpace *> int)
+
+parseLogMessage :: Parsec String () LogMessage
+parseLogMessage =
+  try (LogMessage <$> parseMessageType <* whiteSpace <*> int <* whiteSpace <*> many anyChar) <|>
+  Unknown <$> many anyChar
 
 parseMessage :: String -> LogMessage
 parseMessage s =
