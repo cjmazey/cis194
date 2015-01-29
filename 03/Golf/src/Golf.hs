@@ -1,7 +1,7 @@
 module Golf where
 
-import Control.Applicative
-import Data.List.Extra
+import           Control.Applicative
+import           Data.List.Extra
 
 {-|
 '<$>' is essentially 'fmap', which is 'map' for lists.
@@ -20,9 +20,12 @@ skips a =
   (\n -> chunksOf n a >>= drop (n - 1)) <$> [1..length a]
 
 {-|
+'zip3' gives triples consisting of all sub-sequences of length 3 in @a@.
+
+The guards filter out the triples with local maximums in the middle.
+
+Then we return a list of these middles.
 -}
 localMaxima :: [Integer] -> [Integer]
-localMaxima (x:r@(y:z:_))
-  | y > x && y > z = y : localMaxima r
-  | otherwise = localMaxima r
-localMaxima _ = []
+localMaxima a =
+  [y | (x,y,z) <- zip3 a (drop 1 a) (drop 2 a), x < y, y > z]
