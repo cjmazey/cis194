@@ -2,6 +2,7 @@ module Golf where
 
 import           Control.Applicative
 import           Data.List.Extra
+import           Text.Printf
 
 {-|
 '<$>' is essentially 'fmap', which is 'map' for lists.
@@ -38,4 +39,4 @@ histogram a =
   where
     s = maximum >>= f $ length . flip filter a . (==) <$> [0..9]
     f m =
-      unlines . transpose . map (\n -> replicate (m - n) ' ' ++ replicate n '*')
+      unlines . transpose . map (\n -> printf "%*s" m $ replicate n '*')
