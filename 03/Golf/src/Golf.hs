@@ -29,3 +29,14 @@ Then we return a list of these middles.
 localMaxima :: [Integer] -> [Integer]
 localMaxima a =
   [y | (x,y,z) <- zip3 a (drop 1 a) (drop 2 a), x < y, y > z]
+
+{-|
+-}
+histogram :: [Integer] -> String
+histogram a =
+  let h = map (length . flip elemIndices a) [0..9]
+      m = maximum h
+      s = map (\n -> replicate (m - n) ' ' ++ replicate n '*') h
+      t = concatMap (++"\n") $ transpose s
+      l = t ++ "==========\n0123456789\n" in
+   l
