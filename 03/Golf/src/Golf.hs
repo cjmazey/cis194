@@ -38,5 +38,4 @@ histogram a =
   s ++ "==========\n0123456789\n"
   where
     s = maximum >>= f $ length . flip filter a . (==) <$> [0..9]
-    f m =
-      unlines . transpose . map (\n -> printf "%*s" m $ replicate n '*')
+    f m = unlines . transpose . map (\n -> printf "%*s" m $ replicate n '*')
