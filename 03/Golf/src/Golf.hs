@@ -36,7 +36,5 @@ histogram :: [Integer] -> String
 histogram a =
   let h = map (length . flip elemIndices a) [0..9]
       m = maximum h
-      s = map (\n -> replicate (m - n) ' ' ++ replicate n '*') h
-      t = concatMap (++"\n") $ transpose s
-      l = t ++ "==========\n0123456789\n" in
-   l
+      s = transpose $ map (\n -> replicate (m - n) ' ' ++ replicate n '*') h
+  in unlines s ++ "==========\n0123456789\n"
