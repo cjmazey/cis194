@@ -34,7 +34,8 @@ localMaxima a =
 -}
 histogram :: [Integer] -> String
 histogram a =
-  let h = map (length . flip elemIndices a) [0..9]
-      m = maximum h
-      s = transpose $ map (\n -> replicate (m - n) ' ' ++ replicate n '*') h
-  in unlines s ++ "==========\n0123456789\n"
+  s ++ "==========\n0123456789\n"
+  where
+    s = maximum >>= f $ length . flip filter a . (==) <$> [0..9]
+    f m =
+      unlines . transpose . map (\n -> replicate (m - n) ' ' ++ replicate n '*')
