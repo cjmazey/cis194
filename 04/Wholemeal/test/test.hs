@@ -16,8 +16,13 @@ properties = testGroup "Properties" [qcProps]
 
 qcProps = testGroup "(checked by QuickCheck)"
   [ QC.testProperty "fun1 == fun1'" $
-      \xs ->
-       QC.classify (length xs < 2) "trivial" $
-       QC.classify (2 `elem` xs) "contains 2" $
-       fun1 xs == fun1' xs
+    \xs ->
+     QC.classify (length xs < 2) "trivial" $
+     QC.classify (2 `elem` xs) "contains 2" $
+     fun1 xs == fun1' xs
+  , QC.testProperty "fun2 == fun2'" $
+    \(Positive x) ->
+     --QC.collect x $
+     QC.classify (x == 1) "trivial" $
+     fun2 x == fun2' x
   ]
