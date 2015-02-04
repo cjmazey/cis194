@@ -46,19 +46,19 @@ insertTree x (Node _ l y r)
         l'@(Node hl' _ _ _) = insertTree x l
         r'@(Node hr' _ _ _) = insertTree x r
 
-foldTree :: [a] -> Tree a
-foldTree = foldr insertTree Leaf
-
-prop_Height :: Tree a -> Bool
+prop_Height :: Tree Char -> Bool
 prop_Height t =
   height t == height' t
   where height' Leaf = (-1)
         height' (Node _ l _ r) =
           1 + max (height' l) (height' r)
 
-prop_Balanced :: Tree a -> Bool
+prop_Balanced :: Tree Char -> Bool
 prop_Balanced Leaf = True
 prop_Balanced (Node _ l _ r) =
   abs (height l - height r) <= 1 &&
   prop_Balanced l &&
   prop_Balanced r
+
+foldTree :: [a] -> Tree a
+foldTree = foldr insertTree Leaf

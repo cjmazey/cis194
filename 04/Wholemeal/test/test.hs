@@ -25,4 +25,14 @@ qcProps = testGroup "(checked by QuickCheck)"
      --QC.collect x $
      QC.classify (x == 1) "trivial" $
      fun2 x == fun2' x
+  , QC.testProperty "prop_Height" $
+    \xs ->
+    QC.classify (length xs < 2) "trivial" $
+    QC.classify (length xs > 10) "large" $
+    prop_Height $ foldTree xs
+  , QC.testProperty "prop_Balanced" $
+    \xs ->
+    QC.classify (length xs < 2) "trivial" $
+    QC.classify (length xs > 10) "large" $
+    prop_Balanced $ foldTree xs
   ]
