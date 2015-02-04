@@ -69,7 +69,7 @@ xor :: [Bool] -> Bool
 xor = foldr (/=) False
 
 map' :: (a -> b) -> [a] -> [b]
-map' f = foldr (\e a -> f e : a) []
+map' f = foldr ((:) . f) []
 
 myFoldl :: (a -> b -> a) -> a -> [b] -> a
 myFoldl f base xs = foldr (\x g z -> g (f z x)) id xs base
