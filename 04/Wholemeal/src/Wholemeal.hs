@@ -70,3 +70,12 @@ xor = foldr f False
   where
     f x y | x == y = False
           | otherwise = True
+
+map' :: (a -> b) -> [a] -> [b]
+map' f = foldr (\e a -> f e : a) []
+
+myFoldl :: (a -> b -> a) -> a -> [b] -> a
+myFoldl f base xs =
+  foldr g id xs base
+  where
+    g x h = \z -> h (f z x)
