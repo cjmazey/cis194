@@ -35,4 +35,8 @@ qcProps = testGroup "(checked by QuickCheck)"
     QC.classify (length xs < 2) "trivial" $
     QC.classify (length xs > 10) "large" $
     prop_Balanced $ foldTree xs
+  , QC.testProperty "xor" $
+    \xs ->
+    QC.classify (length xs < 2) "trivial" $
+    xor xs == (odd . length . filter id) xs
   ]
