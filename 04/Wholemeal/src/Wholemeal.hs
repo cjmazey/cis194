@@ -33,23 +33,32 @@ data Tree a = Leaf
             deriving (Show, Eq)
 
 height :: Tree a -> Integer
-height Leaf = undefined
-height (Node _ Leaf _ Leaf) = 0
-height (Node _ l _ Leaf) = 1 + height l
-height (Node _ Leaf _ r) = 1 + height r
-height (Node _ l _ r) = 1 + max (height l) (height r)
+height Leaf = (-1)
+height (Node h _ _ _) = h
+
+insertTree :: a -> Tree a -> Tree a
+insertTree x Leaf = Node 0 Leaf x Leaf
+insertTree x (Node _ l y r)
+  | hl < hr = Node (max hl' hr + 1) l' y r
+  | otherwise = Node (max hl hr' + 1) l y r'
+  where hl = height l
+        hr = height r
+        l'@(Node hl' _ _ _) = insertTree x l
+        r'@(Node hr' _ _ _) = insertTree x r
 
 foldTree :: [a] -> Tree a
 foldTree = foldr insertTree Leaf
 
-insertTree :: a -> Tree a -> Tree a
-insertTree a Leaf = Node 0 Leaf a Leaf
-insertTree a' (Node h l a r) =
-  case (l, r) of
-   (Leaf, Leaf) -> Node 1 Leaf a t
-   (Leaf, _)    -> Node h t a r
-   (_, Leaf)    -> Node h l a t
-   (Node lh _ _ _, Node rh _ _ _)
-     | lh < rh   -> Node (rh + 1) (insertTree a' l) a r
-     | otherwise -> Node (lh + 1) l a (insertTree a' r)
-  where t  = insertTree a' Leaf
+prop_Height :: Tree a -> Bool
+prop_Height t =
+  height t == height' t
+  where height' Leaf = (-1)
+        height' (Node _ l _ r) =
+          1 + max (height' l) (height' r)
+
+prop_Balanced :: Tree a -> Bool
+prop_Balanced Leaf = True
+prop_Balanced (Node _ l _ r) =
+  abs (height l - height r) <= 1 &&
+  prop_Balanced l &&
+  prop_Balanced r
