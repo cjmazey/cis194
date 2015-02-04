@@ -66,10 +66,7 @@ foldTree = foldr insertTree Leaf
 -- Exercise 3
 
 xor :: [Bool] -> Bool
-xor = foldr f False
-  where
-    f x y | x == y = False
-          | otherwise = True
+xor = foldr (/=) False
 
 map' :: (a -> b) -> [a] -> [b]
 map' f = foldr (\e a -> f e : a) []
