@@ -48,10 +48,8 @@ qcProps = testGroup "(checked by QuickCheck)"
   , testProperty "myFoldl = foldl" $
     let lam :: (Fun Integer (Fun Integer Integer)) -> Integer -> [Integer] -> Property
         lam f z xs =
-          let f' x y =
-                apply ((apply f) x) y
-          in
-           classify (length xs < 2) "trivial" $
-           myFoldl f' z xs == foldl f' z xs
+          classify (length xs < 2) "trivial" $
+          myFoldl f' z xs == foldl f' z xs
+          where f' x y = apply ((apply f) x) y
     in lam
   ]
