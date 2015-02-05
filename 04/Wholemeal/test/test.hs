@@ -52,4 +52,8 @@ qcProps = testGroup "(checked by QuickCheck)"
           myFoldl f' z xs == foldl f' z xs
           where f' = apply . (apply f)
     in p
+  , testProperty "sieveSundaram = sieveEratosthenes" $
+    \(Positive n) ->
+    classify (n < 2) "trivial" $
+    2 : sieveSundaram n == sieveEratosthenes (2 * n + 2)
   ]

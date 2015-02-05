@@ -2,7 +2,7 @@
 
 module Wholemeal where
 
-import Data.List ((\\))
+import           Data.List ((\\))
 
 -- Exercise 1
 
@@ -83,6 +83,9 @@ sieveSundaram n =
   map (\x -> 2 * x + 1) $
   [1..n] \\ [m | j <- [1..n], i <- [1..j], let m = i + j + 2 * i * j, m <= n]
 
-prime :: Integer -> Bool
-prime n =
-  all (\i -> n `mod` i /= 0) [2 .. (toInteger . truncate . sqrt . fromInteger) n]
+sieveEratosthenes :: Integer -> [Integer]
+sieveEratosthenes n =
+  f [2..n]
+  where
+    f [] = []
+    f (x:xs) = x : f (filter (\y -> y `mod` x /= 0) xs)
