@@ -40,16 +40,16 @@ qcProps = testGroup "(checked by QuickCheck)"
     classify (length xs < 2) "trivial" $
     xor xs == (odd . length . filter id) xs
   , testProperty "map' = map" $
-    let lam :: (Fun Integer Integer) -> [Integer] -> Property
-        lam f xs =
+    let p :: (Fun Integer Integer) -> [Integer] -> Property
+        p f xs =
           classify (length xs < 2) "trivial" $
           map' (apply f) xs == map (apply f) xs
-    in lam
+    in p
   , testProperty "myFoldl = foldl" $
-    let lam :: (Fun Integer (Fun Integer Integer)) -> Integer -> [Integer] -> Property
-        lam f z xs =
+    let p :: (Fun Integer (Fun Integer Integer)) -> Integer -> [Integer] -> Property
+        p f z xs =
           classify (length xs < 2) "trivial" $
           myFoldl f' z xs == foldl f' z xs
-          where f' x y = apply ((apply f) x) y
-    in lam
+          where f' = apply . (apply f)
+    in p
   ]
