@@ -2,8 +2,9 @@ module Main where
 
 import           Wholemeal
 
+import           Test.QuickCheck.Function
 import           Test.Tasty
-import           Test.Tasty.QuickCheck as QC
+import           Test.Tasty.QuickCheck
 
 main :: IO ()
 main = defaultMain tests
@@ -15,28 +16,42 @@ properties :: TestTree
 properties = testGroup "Properties" [qcProps]
 
 qcProps = testGroup "(checked by QuickCheck)"
-  [ QC.testProperty "fun1 == fun1'" $
+  [ testProperty "fun1 == fun1'" $
     \xs ->
-     QC.classify (length xs < 2) "trivial" $
-     QC.classify (2 `elem` xs) "contains 2" $
+     classify (length xs < 2) "trivial" $
+     classify (2 `elem` xs) "contains 2" $
      fun1 xs == fun1' xs
-  , QC.testProperty "fun2 == fun2'" $
+  , testProperty "fun2 == fun2'" $
     \(Positive x) ->
-     --QC.collect x $
-     QC.classify (x == 1) "trivial" $
+     classify (x == 1) "trivial" $
      fun2 x == fun2' x
-  , QC.testProperty "prop_Height" $
+  , testProperty "prop_Height" $
     \xs ->
-    QC.classify (length xs < 2) "trivial" $
-    QC.classify (length xs > 10) "large" $
+    classify (length xs < 2) "trivial" $
+    classify (length xs > 10) "large" $
     prop_Height $ foldTree xs
-  , QC.testProperty "prop_Balanced" $
+  , testProperty "prop_Balanced" $
     \xs ->
-    QC.classify (length xs < 2) "trivial" $
-    QC.classify (length xs > 10) "large" $
+    classify (length xs < 2) "trivial" $
+    classify (length xs > 10) "large" $
     prop_Balanced $ foldTree xs
-  , QC.testProperty "xor" $
+  , testProperty "xor" $
     \xs ->
-    QC.classify (length xs < 2) "trivial" $
+    classify (length xs < 2) "trivial" $
     xor xs == (odd . length . filter id) xs
+  , testProperty "map' = map" $
+    let lam :: (Fun Integer Integer) -> [Integer] -> Property
+        lam f xs =
+          classify (length xs < 2) "trivial" $
+          map' (apply f) xs == map (apply f) xs
+    in lam
+  , testProperty "myFoldl = foldl" $
+    let lam :: (Fun Integer (Fun Integer Integer)) -> Integer -> [Integer] -> Property
+        lam f z xs =
+          let f' x y =
+                apply ((apply f) x) y
+          in
+           classify (length xs < 2) "trivial" $
+           myFoldl f' z xs == foldl f' z xs
+    in lam
   ]

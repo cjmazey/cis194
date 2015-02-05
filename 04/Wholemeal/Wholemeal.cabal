@@ -19,7 +19,8 @@ test-suite test
   hs-source-dirs: test
   type: exitcode-stdio-1.0
   main-is: test.hs
-  build-depends: base,
-                 tasty,
-                 tasty-quickcheck,
-                 Wholemeal
+  build-depends: QuickCheck >= 2.7.6
+               , Wholemeal
+               , base
+               , tasty
+               , tasty-quickcheck
