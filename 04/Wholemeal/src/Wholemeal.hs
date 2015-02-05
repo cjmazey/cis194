@@ -2,6 +2,8 @@
 
 module Wholemeal where
 
+import Data.List ((\\))
+
 -- Exercise 1
 
 fun1 :: [Integer] -> Integer
@@ -75,3 +77,12 @@ myFoldl :: (a -> b -> a) -> a -> [b] -> a
 myFoldl f base xs = foldr (\x g z -> g (f z x)) id xs base
 
 -- Exercise 4
+
+sieveSundaram :: Integer -> [Integer]
+sieveSundaram n =
+  map (\x -> 2 * x + 1) $
+  [1..n] \\ [m | j <- [1..n], i <- [1..j], let m = i + j + 2 * i * j, m <= n]
+
+prime :: Integer -> Bool
+prime n =
+  all (\i -> n `mod` i /= 0) [2 .. (toInteger . truncate . sqrt . fromInteger) n]
