@@ -1,7 +1,10 @@
+{-# LANGUAGE FlexibleInstances, TypeSynonymInstances #-}
+
 module Calc where
 
 import           ExprT
 import           Parser
+import qualified StackVM as S
 
 eval :: ExprT -> Integer
 eval (Lit i) = i
@@ -57,3 +60,11 @@ testInteger = testExp :: Maybe Integer
 testBool = testExp :: Maybe Bool
 testMM = testExp :: Maybe MinMax
 testSat = testExp :: Maybe Mod7
+
+instance Expr S.Program where
+  lit n = [S.PushI n]
+  add p1 p2 = p1 ++ p2 ++ [S.Add]
+  mul p1 p2 = p1 ++ p2 ++ [S.Mul]
+
+compile :: String -> Maybe S.Program
+compile = parseExp lit add mul
