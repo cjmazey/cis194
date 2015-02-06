@@ -32,8 +32,7 @@ instance Expr Integer where
   mul = (*)
 
 instance Expr Bool where
-  lit n | n <= 0 = False
-        | otherwise = True
+  lit = (> 0)
   add = (||)
   mul = (&&)
 
