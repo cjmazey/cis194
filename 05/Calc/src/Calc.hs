@@ -1,10 +1,12 @@
-{-# LANGUAGE FlexibleInstances, TypeSynonymInstances #-}
+{-# LANGUAGE FlexibleInstances    #-}
+{-# LANGUAGE TypeSynonymInstances #-}
 
 module Calc where
 
+import qualified Data.Map as M
 import           ExprT
 import           Parser
-import qualified StackVM as S
+import qualified StackVM  as S
 
 eval :: ExprT -> Integer
 eval (Lit i) = i
@@ -68,3 +70,37 @@ instance Expr S.Program where
 
 compile :: String -> Maybe S.Program
 compile = parseExp lit add mul
+
+class HasVars a where
+  var :: String -> a
+
+data VarExprT = LitV Integer
+              | AddV VarExprT VarExprT
+              | MulV VarExprT VarExprT
+              | VarV String
+              deriving (Show, Eq)
+
+instance Expr VarExprT where
+  lit = LitV
+  add = AddV
+  mul = MulV
+
+instance HasVars VarExprT where
+  var = VarV
+
+instance HasVars (M.Map String Integer -> Maybe Integer) where
+  var = M.lookup
+
+instance Expr (M.Map String Integer -> Maybe Integer) where
+  lit = const . return
+  add e1 e2 m = do r1 <- e1 m
+                   r2 <- e2 m
+                   return $ r1 + r2
+  mul e1 e2 m = do r1 <- e1 m
+                   r2 <- e2 m
+                   return $ r1 * r2
+
+withVars :: [(String, Integer)]
+         -> (M.Map String Integer -> Maybe Integer)
+         -> Maybe Integer
+withVars vs exp = exp $ M.fromList vs
