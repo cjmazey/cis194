@@ -32,3 +32,17 @@ streamMap = fmap
 
 streamFromSeed :: (a -> a) -> a -> Stream a
 streamFromSeed f e = Stream e $ streamFromSeed f (f e)
+
+nats :: Stream Integer
+nats = streamFromSeed (+1) 0
+
+-- ruler =
+-- interleaveStreams (streamRepeat 0) $
+-- interleaveStreams (streamRepeat 1) . . .
+ruler :: Stream Integer
+ruler = f 0
+  where f n = Stream n $ f (n + 1) `interleaveStreams` streamRepeat n
+
+interleaveStreams :: Stream a -> Stream a -> Stream a
+interleaveStreams (Stream h1 t1) (Stream h2 t2) =
+  Stream h1 $ Stream h2 $ interleaveStreams t1 t2
