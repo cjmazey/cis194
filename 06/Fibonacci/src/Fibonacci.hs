@@ -10,3 +10,16 @@ fibs1 = map fib [0..]
 
 fibs2 :: [Integer]
 fibs2 = 0 : 1 : zipWith (+) fibs2 (tail fibs2)
+
+data Stream a = Stream a (Stream a)
+
+instance Functor Stream where
+  fmap f (Stream h t) = Stream (f h) (fmap f t)
+
+streamToList :: Stream a -> [a]
+streamToList (Stream h t) = h : streamToList t
+
+instance Show a => Show (Stream a) where
+  show s = "Stream [" ++
+           concatMap ((++ ",") . show) ((take 20 . streamToList) s) ++
+           ". . .]"
