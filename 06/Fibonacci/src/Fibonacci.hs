@@ -23,3 +23,12 @@ instance Show a => Show (Stream a) where
   show s = "Stream [" ++
            concatMap ((++ ",") . show) ((take 20 . streamToList) s) ++
            ". . .]"
+
+streamRepeat :: a -> Stream a
+streamRepeat e = Stream e (streamRepeat e)
+
+streamMap :: (a -> b) -> Stream a -> Stream b
+streamMap = fmap
+
+streamFromSeed :: (a -> a) -> a -> Stream a
+streamFromSeed f e = Stream e $ streamFromSeed f (f e)
