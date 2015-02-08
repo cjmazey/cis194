@@ -2,8 +2,6 @@
 
 module Fibonacci where
 
-import           Control.Applicative
-
 fib :: Integer -> Integer
 fib 0 = 0
 fib 1 = 1
@@ -19,14 +17,6 @@ fibs2 = 0 : 1 : zipWith (+) fibs2 (tail fibs2)
 
 data Stream a = Stream a (Stream a)
 
-instance Functor Stream where
-  fmap f (Stream h t) = Stream (f h) (fmap f t)
-
-instance Applicative Stream where
-  pure x = Stream x (pure x)
-  (Stream h1 t1) <*> (Stream h2 t2) =
-    Stream (h1 h2) (t1 <*> t2)
-
 instance Show a => Show (Stream a) where
   show s = "Stream [" ++
            concatMap ((++ ",") . show) ((take 20 . streamToList) s) ++
@@ -36,10 +26,10 @@ streamToList :: Stream a -> [a]
 streamToList (Stream h t) = h : streamToList t
 
 streamRepeat :: a -> Stream a
-streamRepeat = pure
+streamRepeat e = Stream e $ streamRepeat e
 
 streamMap :: (a -> b) -> Stream a -> Stream b
-streamMap = fmap
+streamMap f (Stream h t) = Stream (f h) $ streamMap f t
 
 streamFromSeed :: (a -> a) -> a -> Stream a
 streamFromSeed f e = Stream e $ streamFromSeed f (f e)
@@ -64,7 +54,8 @@ x = Stream 0 $ Stream 1 $ streamRepeat 0
 instance Num (Stream Integer) where
   fromInteger i = Stream i $ streamRepeat 0
   negate = streamMap negate
-  s1 + s2 = (+) <$> s1 <*> s2
+  (Stream h1 t1) + (Stream h2 t2) =
+    Stream (h1 + h2) $ t1 + t2
   (Stream h1 t1) * b@(Stream h2 t2) =
     Stream (h1 * h2) $ streamMap (* h1) t2 + t1 * b
   abs = undefined
