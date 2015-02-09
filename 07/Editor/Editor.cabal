@@ -6,14 +6,11 @@ license-file:        LICENSE
 author:              Christopher Mazey
 maintainer:          cjmazey@gmail.com
 build-type:          Simple
-cabal-version:       >=1.20
-data-files:          carol.txt
-data-dir:            data
+cabal-version:       >=1.18
 
 library
   exposed-modules:     Editor
-  other-modules:       Buffer
-                     , Paths_Editor
+                     , Buffer
   other-extensions:    GeneralizedNewtypeDeriving
                      , ScopedTypeVariables
   build-depends:       base >=4.7 && <4.8
