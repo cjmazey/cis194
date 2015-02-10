@@ -1,3 +1,5 @@
+{-# LANGUAGE FlexibleInstances #-}
+
 module Main where
 
 import Buffer.JoinList
@@ -7,16 +9,12 @@ import Test.Tasty
 import Test.Tasty.QuickCheck
 
 -- orphan instance
-instance (Arbitrary Size) where
-  arbitrary = liftM (Size . getNonNegative) arbitrary
-
--- orphan instance
-instance (Arbitrary m, Arbitrary a) => Arbitrary (JoinList m a) where
+instance Arbitrary a => Arbitrary (JoinList Size a) where
   arbitrary =
     frequency
       [ (1, return Empty)
-      , (2, liftM2 Single arbitrary arbitrary)
-      , (1, liftM3 Append arbitrary arbitrary arbitrary)
+      , (2, liftM (Single (Size 1)) arbitrary)
+      , (3, liftM2 (+++) arbitrary arbitrary)
       ]
 
 main :: IO ()

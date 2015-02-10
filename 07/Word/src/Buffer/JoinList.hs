@@ -35,6 +35,5 @@ jlToList Empty = []
 jlToList (Single _ a) = [a]
 jlToList (Append _ l1 l2) = jlToList l1 ++ jlToList l2
 
--- prop_indexJ ::(Sized b, Monoid b, Eq a) => Int -> JoinList b a -> Bool
 prop_indexJ :: Int -> JoinList Size Char -> Bool
 prop_indexJ i jl = indexJ i jl == jlToList jl !!? i
