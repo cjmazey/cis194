@@ -1,5 +1,6 @@
 module Buffer.JoinList where
 
+import           Buffer.JoinList.Scrabble
 import           Buffer.JoinList.Sized
 import           Data.Monoid
 
@@ -44,6 +45,9 @@ takeJ n (Append _ l1 l2)
   | n <= s = takeJ n l1
   | otherwise = l1 +++ takeJ (n - s) l2
   where s = getSize $ size $ tag l1
+
+scoreLine :: String -> JoinList Score String
+scoreLine l = Single (mconcat (map scoreString (words l))) l
 
 -- tests
 

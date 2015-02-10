@@ -1,5 +1,6 @@
 {-# LANGUAGE FlexibleInstances          #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
+
 module Buffer.JoinList.Sized where
 
 import           Data.Monoid
