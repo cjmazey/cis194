@@ -17,4 +17,23 @@ tag (Single m _) = m
 tag (Append m _ _) = m
 
 indexJ :: (Sized b, Monoid b) => Int -> JoinList b a -> Maybe a
-indexJ = undefined
+indexJ _ Empty = Nothing
+indexJ 0 (Single _ a) = Just a
+indexJ _ (Single _ _) = Nothing
+indexJ i (Append _ j k) | i < s = indexJ i j
+                        | otherwise = indexJ (i - s) k
+  where s = getSize $ size $ tag j
+
+(!!?) :: [a] -> Int -> Maybe a
+[]       !!? _          = Nothing
+_        !!? i | i <  0 = Nothing
+(x : _)  !!? 0          = Just x
+(_ : xs) !!? i          = xs !!? (i - 1)
+
+jlToList :: JoinList m a -> [a]
+jlToList Empty = []
+jlToList (Single _ a) = [a]
+jlToList (Append _ l1 l2) = jlToList l1 ++ jlToList l2
+
+prop_indexJ ::(Sized b, Monoid b, Eq a) => Int -> JoinList b a -> Bool
+prop_indexJ i jl = indexJ i jl == jlToList jl !!? i
