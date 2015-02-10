@@ -20,9 +20,9 @@ indexJ :: (Sized b, Monoid b) => Int -> JoinList b a -> Maybe a
 indexJ _ Empty = Nothing
 indexJ 0 (Single _ a) = Just a
 indexJ _ (Single _ _) = Nothing
-indexJ i (Append _ j k) | i < s = indexJ i j
+indexJ i l@(Append _ j k) | i < s = indexJ i j
                         | otherwise = indexJ (i - s) k
-  where s = getSize $ size $ tag j
+  where s = getSize $ size $ tag l
 
 (!!?) :: [a] -> Int -> Maybe a
 []       !!? _          = Nothing

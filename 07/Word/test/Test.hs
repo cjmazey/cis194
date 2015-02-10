@@ -28,5 +28,7 @@ tests = testGroup "Tests" [properties]
 properties :: TestTree
 properties = testGroup "Properties"
   [ testProperty "prop_indexJ" $
-    \ i l -> prop_indexJ i l
+    \ i l ->
+     classify (length (jlToList l) < 5) "sort of trivial" $
+     prop_indexJ i l
   ]
