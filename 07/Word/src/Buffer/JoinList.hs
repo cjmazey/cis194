@@ -1,5 +1,8 @@
+{-# LANGUAGE FlexibleInstances #-}
+
 module Buffer.JoinList where
 
+import           Buffer
 import           Buffer.JoinList.Scrabble
 import           Buffer.JoinList.Sized
 import           Data.Monoid
@@ -10,6 +13,8 @@ data JoinList m a = Empty
                   deriving (Eq, Show)
 
 (+++) :: Monoid m => JoinList m a -> JoinList m a -> JoinList m a
+Empty +++ k = k
+j +++ Empty = j
 j +++ k = Append (tag j <> tag k) j k
 
 tag :: Monoid m => JoinList m a -> m
@@ -46,8 +51,29 @@ takeJ n (Append _ l1 l2)
   | otherwise = l1 +++ takeJ (n - s) l2
   where s = getSize $ size $ tag l1
 
+splitAtJ :: (Sized b, Monoid b) =>
+          Int ->
+          JoinList b a ->
+          (JoinList b a, JoinList b a)
+splitAtJ n jl = (takeJ n jl, dropJ n jl)
+
 scoreLine :: String -> JoinList Score String
-scoreLine = mconcat . map scoreString . words >>= Single
+scoreLine = scoreString >>= Single
+
+type DJoinList = JoinList (Score, Size) String
+
+instance Buffer DJoinList  where
+  toString = unlines . jlToList
+  fromString s = fromLines $ lines s
+    where fromLines [] = Empty
+          fromLines [l] =
+            Single (scoreString l, 1) l
+          fromLines ls = fromLines ls' +++ fromLines ls''
+            where (ls', ls'') = splitAt (length ls `div` 2) ls
+  line = indexJ
+  replaceLine i l jl = replaceLine' (splitAtJ i jl)
+    where replaceLine' (pre, Empty) = pre
+          replaceLine' (pre, suf) = pre +++ fromString l +++ dropJ 1 suf
 
 -- tests
 
@@ -70,3 +96,5 @@ prop_dropJ n jl = jlToList (dropJ n jl) == drop n (jlToList jl)
 
 prop_takeJ :: Int -> JoinList Size Char -> Bool
 prop_takeJ n jl = jlToList (takeJ n jl) == take n (jlToList jl)
+
+foo = fromString "foo bar\nbaz\nquuk nu\nblublu" :: DJoinList
