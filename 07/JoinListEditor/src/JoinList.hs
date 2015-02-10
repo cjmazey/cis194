@@ -1,16 +1,20 @@
 module JoinList where
 
 import           Data.Monoid
+import Sized
 
 data JoinList m a = Empty
                   | Single m a
-                  | Append (JoinList m a) (JoinList m a)
+                  | Append m (JoinList m a) (JoinList m a)
                   deriving (Eq, Show)
 
 (+++) :: Monoid m => JoinList m a -> JoinList m a -> JoinList m a
-(+++) = Append
+j +++ k = Append (tag j <> tag k) j k
 
 tag :: Monoid m => JoinList m a -> m
 tag Empty = mempty
 tag (Single m _) = m
-tag (Append j k) = tag j <> tag k
+tag (Append m _ _) = m
+
+indexJ :: (Sized b, Monoid b) => Int -> JoinList b a -> Maybe a
+indexJ = undefined
