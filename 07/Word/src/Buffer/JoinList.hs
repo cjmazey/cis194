@@ -1,7 +1,7 @@
 module Buffer.JoinList where
 
-import           Data.Monoid
 import           Buffer.JoinList.Sized
+import           Data.Monoid
 
 data JoinList m a = Empty
                   | Single m a
@@ -20,9 +20,9 @@ indexJ :: (Sized b, Monoid b) => Int -> JoinList b a -> Maybe a
 indexJ _ Empty = Nothing
 indexJ 0 (Single _ a) = Just a
 indexJ _ (Single _ _) = Nothing
-indexJ i l@(Append _ j k) | i < s = indexJ i j
+indexJ i (Append _ j k) | i < s = indexJ i j
                         | otherwise = indexJ (i - s) k
-  where s = getSize $ size $ tag l
+  where s = getSize $ size $ tag j
 
 (!!?) :: [a] -> Int -> Maybe a
 []       !!? _          = Nothing
@@ -37,3 +37,15 @@ jlToList (Append _ l1 l2) = jlToList l1 ++ jlToList l2
 
 prop_indexJ :: Int -> JoinList Size Char -> Bool
 prop_indexJ i jl = indexJ i jl == jlToList jl !!? i
+
+dropJ :: (Sized b, Monoid b) => Int -> JoinList b a -> JoinList b a
+dropJ _ Empty = Empty
+dropJ n s@(Single _ _) | n > 0 = Empty
+                       | otherwise = s
+dropJ n (Append _ l1 l2)
+  | n <= s = dropJ n l1 +++ l2
+  | otherwise = dropJ (n - s) l2
+  where s = getSize $ size $ tag l1
+
+prop_dropJ :: Int -> JoinList Size Char -> Bool
+prop_dropJ n jl = jlToList (dropJ n jl) == drop n (jlToList jl)

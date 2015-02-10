@@ -1,7 +1,8 @@
-{-# LANGUAGE GeneralizedNewtypeDeriving, FlexibleInstances #-}
+{-# LANGUAGE FlexibleInstances          #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 module Buffer.JoinList.Sized where
 
-import Data.Monoid
+import           Data.Monoid
 
 newtype Size = Size Int
   deriving (Eq, Ord, Show, Num)

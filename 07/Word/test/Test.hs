@@ -2,11 +2,11 @@
 
 module Main where
 
-import Buffer.JoinList
-import Buffer.JoinList.Sized
-import Control.Monad
-import Test.Tasty
-import Test.Tasty.QuickCheck
+import           Buffer.JoinList
+import           Buffer.JoinList.Sized
+import           Control.Monad
+import           Test.Tasty
+import           Test.Tasty.QuickCheck
 
 -- orphan instance
 instance Arbitrary a => Arbitrary (JoinList Size a) where
@@ -29,4 +29,8 @@ properties = testGroup "Properties"
     \ i l ->
      classify (length (jlToList l) < 5) "sort of trivial" $
      prop_indexJ i l
+  , testProperty "prop_dropJ" $
+    \ n l ->
+     classify (length (jlToList l) < 5) "sort of trivial" $
+     prop_dropJ n l
   ]
