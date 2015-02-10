@@ -33,4 +33,8 @@ properties = testGroup "Properties"
     \ n l ->
      classify (length (jlToList l) < 5) "sort of trivial" $
      prop_dropJ n l
+  , testProperty "prop_takeJ" $
+    \ n l ->
+     classify (length (jlToList l) < 5) "sort of trivial" $
+     prop_takeJ n l
   ]
