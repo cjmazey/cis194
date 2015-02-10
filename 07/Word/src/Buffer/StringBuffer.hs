@@ -1,5 +1,5 @@
 {-# LANGUAGE FlexibleInstances, TypeSynonymInstances #-}
-module StringBuffer where
+module Buffer.StringBuffer where
 
 import Data.Monoid
 

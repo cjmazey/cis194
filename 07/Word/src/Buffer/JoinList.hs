@@ -1,7 +1,7 @@
-module JoinList where
+module Buffer.JoinList where
 
 import           Data.Monoid
-import Sized
+import           Buffer.JoinList.Sized
 
 data JoinList m a = Empty
                   | Single m a

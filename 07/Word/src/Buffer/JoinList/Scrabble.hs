@@ -1,1 +1,1 @@
-module Scrabble where
+module Buffer.JoinList.Scrabble where

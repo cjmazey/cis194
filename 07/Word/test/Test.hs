@@ -1,6 +1,6 @@
 module Main where
 
-import JoinList
+import Buffer.JoinList
 import Test.Tasty
 import Test.Tasty.QuickCheck
 

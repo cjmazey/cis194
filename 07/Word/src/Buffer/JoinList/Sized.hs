@@ -1,5 +1,5 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving, FlexibleInstances #-}
-module Sized where
+module Buffer.JoinList.Sized where
 
 import Data.Monoid
 

@@ -1,6 +1,6 @@
 module Main where
 
-import StringBuffer
+import Buffer.StringBuffer
 import Editor
 
 main = runEditor editor $ unlines
