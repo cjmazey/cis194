@@ -3,9 +3,11 @@
 module Main where
 
 import           Buffer.JoinList
+import           Buffer.JoinList.Scrabble
 import           Buffer.JoinList.Sized
 import           Control.Monad
 import           Test.Tasty
+import           Test.Tasty.HUnit
 import           Test.Tasty.QuickCheck
 
 -- orphan instance
@@ -21,7 +23,7 @@ main :: IO ()
 main = defaultMain tests
 
 tests :: TestTree
-tests = testGroup "Tests" [properties]
+tests = testGroup "Tests" [properties, unitTests]
 
 properties :: TestTree
 properties = testGroup "Properties"
@@ -37,4 +39,11 @@ properties = testGroup "Properties"
     \ n l ->
      classify (length (jlToList l) < 5) "sort of trivial" $
      prop_takeJ n l
+  ]
+
+unitTests :: TestTree
+unitTests = testGroup "Unit tests"
+  [ testCase "scoreLine" $
+    scoreLine "yay " +++ scoreLine "haskell!" @?=
+    Append (Score 23) (Single (Score 9) "yay ") (Single (Score 14) "haskell!")
   ]

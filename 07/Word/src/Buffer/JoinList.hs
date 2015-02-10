@@ -47,7 +47,7 @@ takeJ n (Append _ l1 l2)
   where s = getSize $ size $ tag l1
 
 scoreLine :: String -> JoinList Score String
-scoreLine l = Single (mconcat (map scoreString (words l))) l
+scoreLine = mconcat . map scoreString . words >>= Single
 
 -- tests
 
