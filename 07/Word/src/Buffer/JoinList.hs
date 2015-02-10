@@ -57,6 +57,11 @@ splitAtJ :: (Sized b, Monoid b) =>
           (JoinList b a, JoinList b a)
 splitAtJ n jl = (takeJ n jl, dropJ n jl)
 
+foldJ :: z -> (m -> a -> z) -> (m -> z -> z -> z) -> JoinList m a -> z
+foldJ z _ _ Empty = z
+foldJ _ f _ (Single m a) = f m a
+foldJ z f g (Append m jl1 jl2) = g m (foldJ z f g jl1) (foldJ z f g jl2)
+
 scoreLine :: String -> JoinList Score String
 scoreLine = scoreString >>= Single
 
@@ -74,6 +79,8 @@ instance Buffer DJoinList  where
   replaceLine i l jl = replaceLine' (splitAtJ i jl)
     where replaceLine' (pre, Empty) = pre
           replaceLine' (pre, suf) = pre +++ fromString l +++ dropJ 1 suf
+  numLines = getSize . snd . tag
+  value = getScore . fst . tag
 
 -- tests
 
@@ -96,5 +103,3 @@ prop_dropJ n jl = jlToList (dropJ n jl) == drop n (jlToList jl)
 
 prop_takeJ :: Int -> JoinList Size Char -> Bool
 prop_takeJ n jl = jlToList (takeJ n jl) == take n (jlToList jl)
-
-foo = fromString "foo bar\nbaz\nquuk nu\nblublu" :: DJoinList
