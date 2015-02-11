@@ -13,7 +13,7 @@ glCons e (GL es f) =
 instance Monoid GuestList where
   mempty = GL [] 0
   mappend (GL es f) (GL es' f') =
-    GL (es <> es') (f + f')
+    GL (es ++ es') (f + f')
 
 moreFun :: GuestList -> GuestList -> GuestList
 moreFun = max
@@ -23,3 +23,9 @@ treeFold f t =
   f (rootLabel t) $ map (treeFold f) $ subForest t
 
 -- combineGLs :: Employee -> [GuestList] -> GuestList
+
+nextLevel :: Employee -> [(GuestList, GuestList)] -> (GuestList, GuestList)
+nextLevel e = f . unzip
+  where
+    f (withSubs, withoutSubs) =
+      (mappend (glCons e mempty) (mconcat withoutSubs), mconcat withSubs)
