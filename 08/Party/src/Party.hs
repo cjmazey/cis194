@@ -29,3 +29,7 @@ nextLevel e = f . unzip
   where
     f (withSubs, withoutSubs) =
       (mappend (glCons e mempty) (mconcat withoutSubs), mconcat withSubs)
+
+maxFun :: Tree Employee -> GuestList
+maxFun t = moreFun withBoss withoutBoss
+  where (withBoss, withoutBoss) = treeFold nextLevel t
