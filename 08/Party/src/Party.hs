@@ -2,6 +2,7 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 module Party where
 
+import           Data.List   (sort)
 import           Data.Monoid
 import           Data.Tree
 import           Employee
@@ -35,6 +36,5 @@ maxFun t = moreFun withBoss withoutBoss
   where (withBoss, withoutBoss) = treeFold nextLevel t
 
 formatGuestList :: GuestList -> String
-formatGuestList (GL es f) =
-  "Total fun: " ++ show f ++ "\n" ++
-  concatMap (\ e -> empName e ++ "\n") es
+formatGuestList (GL es f) = unlines $
+  ("Total fun: " ++ show f) : sort (map empName es)

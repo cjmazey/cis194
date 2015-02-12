@@ -6,6 +6,8 @@ import           Paths_Party
 
 
 main :: IO ()
-main = getDataFileName "company.txt" >>=
-       readFile >>=
-       putStrLn . formatGuestList . maxFun . read
+main = let process :: String -> String
+           process = formatGuestList . maxFun . read
+       in getDataFileName "company.txt" >>=
+          readFile >>=
+          putStrLn . process
