@@ -90,3 +90,14 @@ intPair =
   posInt <*>
   char ' ' <*>
   posInt
+
+instance Alternative Parser where
+  empty =
+    Parser $
+    const Nothing
+  p1 <|> p2 =
+    Parser $
+    \s ->
+      let r1 = runParser p1 s
+          r2 = runParser p2 s
+      in r1 <|> r2
