@@ -71,3 +71,22 @@ instance Applicative Parser where
       do (f,s') <- runParser p1 s
          (a,s'') <- runParser p2 s'
          return (f a,s'')
+
+abParser :: Parser (Char,Char)
+abParser =
+  (,) <$>
+  char 'a' <*>
+  char 'b'
+
+abParser_ :: Parser ()
+abParser_ =
+  (const . const) () <$>
+  char 'a' <*>
+  char 'b'
+
+intPair :: Parser [Integer]
+intPair =
+  (\i1 _ i2 -> [i1,i2]) <$>
+  posInt <*>
+  char ' ' <*>
+  posInt
