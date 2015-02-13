@@ -101,3 +101,10 @@ instance Alternative Parser where
       let r1 = runParser p1 s
           r2 = runParser p2 s
       in r1 <|> r2
+
+intOrUppercase :: Parser ()
+intOrUppercase =
+  const () <$>
+  posInt <|>
+  const () <$>
+  satisfy isUpper

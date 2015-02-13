@@ -35,4 +35,13 @@ unitTests =
              Nothing
             ,testCase "intPair" $
              runParser intPair "12 34" @?=
-             Just ([12,34],"")]
+             Just ([12,34],"")
+            ,testCase "intOrUppercase 1" $
+             runParser intOrUppercase "342abcd" @?=
+             Just ((),"abcd")
+            ,testCase "intOrUppercase 2" $
+             runParser intOrUppercase "XYZ" @?=
+             Just ((),"YZ")
+            ,testCase "intOrUppercase 3" $
+             runParser intOrUppercase "foo" @?=
+             Nothing]
