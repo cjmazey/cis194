@@ -60,3 +60,14 @@ instance Functor Parser where
     Parser $
     fmap (first f) .
     runParser p
+
+instance Applicative Parser where
+  pure a =
+    Parser $
+    \s -> Just (a,s)
+  p1 <*> p2 =
+    Parser $
+    \s ->
+      do (f,s') <- runParser p1 s
+         (a,s'') <- runParser p2 s'
+         return (f a,s'')
