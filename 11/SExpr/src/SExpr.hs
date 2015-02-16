@@ -6,13 +6,16 @@ module SExpr where
 
 import           AParser
 import           Control.Applicative
+import           Data.Char
 
 ------------------------------------------------------------
 --  1. Parsing repetitions
 ------------------------------------------------------------
 
 zeroOrMore :: Parser a -> Parser [a]
-zeroOrMore p = oneOrMore p <|> pure []
+zeroOrMore p =
+  oneOrMore p <|>
+  pure []
 
 oneOrMore :: Parser a -> Parser [a]
 oneOrMore p = (:) <$> p <*> zeroOrMore p
@@ -22,10 +25,12 @@ oneOrMore p = (:) <$> p <*> zeroOrMore p
 ------------------------------------------------------------
 
 spaces :: Parser String
-spaces = undefined
+spaces = zeroOrMore (satisfy isSpace)
 
 ident :: Parser String
-ident = undefined
+ident =
+  (:) <$> satisfy isAlpha <*>
+  zeroOrMore (satisfy isAlphaNum)
 
 ------------------------------------------------------------
 --  3. Parsing S-expressions
@@ -37,10 +42,13 @@ ident = undefined
 type Ident = String
 
 -- An "atom" is either an integer value or an identifier.
-data Atom = N Integer | I Ident
-  deriving Show
+data Atom
+  = N Integer
+  | I Ident
+  deriving (Show)
 
 -- An S-expression is either an atom, or a list of S-expressions.
-data SExpr = A Atom
-           | Comb [SExpr]
-  deriving Show
+data SExpr
+  = A Atom
+  | Comb [SExpr]
+  deriving (Show)

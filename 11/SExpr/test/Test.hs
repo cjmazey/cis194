@@ -36,4 +36,16 @@ unitTests =
              Just ("","abcdeFGh")
             ,testCase "oneOrMore 2" $
              runParser (oneOrMore (satisfy isUpper)) "abcdeFGh" @?=
+             Nothing
+            ,testCase "ident 1" $
+             runParser ident "foobar baz" @?=
+             Just ("foobar"," baz")
+            ,testCase "ident 2" $
+             runParser ident "foo33fA" @?=
+             Just ("foo33fA","")
+            ,testCase "ident 3" $
+             runParser ident "2bad" @?=
+             Nothing
+            ,testCase "ident 4" $
+             runParser ident "" @?=
              Nothing]
