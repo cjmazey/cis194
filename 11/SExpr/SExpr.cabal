@@ -10,7 +10,7 @@ cabal-version:       >=1.18
 
 library
   exposed-modules:     SExpr
-                     , AParser
+  other-modules:       AParser
   build-depends:       base >=4.7 && <4.8
   hs-source-dirs:      src
   default-language:    Haskell2010
