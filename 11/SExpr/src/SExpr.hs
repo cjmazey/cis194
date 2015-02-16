@@ -56,17 +56,14 @@ data SExpr
 padded :: Parser a -> Parser a
 padded p = spaces *> p <* spaces
 
+parens :: Parser a -> Parser a
+parens p = char '(' *> p <* char ')'
+
 parseSList :: Parser [SExpr]
 parseSList = padded $ zeroOrMore parseSExpr
 
 parseSExpr :: Parser SExpr
-parseSExpr =
-  padded $
-  A <$> parseAtom <|>
-  Comb <$>
-  (char '(' *>
-   parseSList <*
-   char ')')
+parseSExpr = padded $ A <$> parseAtom <|> Comb <$> parens parseSList
 
 parseAtom :: Parser Atom
 parseAtom = padded $ N <$> posInt <|> I <$> ident
