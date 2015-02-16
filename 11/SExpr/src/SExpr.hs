@@ -52,3 +52,21 @@ data SExpr
   = A Atom
   | Comb [SExpr]
   deriving (Show)
+
+padded :: Parser a -> Parser a
+padded p = spaces *> p <* spaces
+
+parseSList :: Parser [SExpr]
+parseSList = padded $ zeroOrMore parseSExpr
+
+parseSExpr :: Parser SExpr
+parseSExpr =
+  padded $
+  A <$> parseAtom <|>
+  Comb <$>
+  (char '(' *>
+   parseSList <*
+   char ')')
+
+parseAtom :: Parser Atom
+parseAtom = padded $ N <$> posInt <|> I <$> ident
