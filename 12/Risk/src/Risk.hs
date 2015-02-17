@@ -74,3 +74,6 @@ successProb b =
          (length $
           filter ((== 0) . defenders) bs) /
        1000
+
+exactSuccessProb :: Battlefield -> Double
+exactSuccessProb = undefined
