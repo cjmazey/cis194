@@ -23,4 +23,4 @@ sequenceA =
 
 replicateA :: Applicative f
            => Int -> f a -> f [a]
-replicateA i = liftA $ replicate i
+replicateA i f = sequenceA (replicate i f)
