@@ -63,3 +63,14 @@ invade :: Battlefield -> Rand StdGen Battlefield
 invade b
   | attackers b < 2 || defenders b == 0 = return b
   | otherwise = battle b >>= invade
+
+successProb :: Battlefield -> Rand StdGen Double
+successProb b =
+  do bs <-
+       replicateM 1000
+                  (invade b)
+     return $
+       fromIntegral
+         (length $
+          filter ((== 0) . defenders) bs) /
+       1000
