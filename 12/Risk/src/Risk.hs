@@ -58,3 +58,8 @@ battle b =
                   die
      return $
        battle' b as ds
+
+invade :: Battlefield -> Rand StdGen Battlefield
+invade b
+  | attackers b < 2 || defenders b == 0 = return b
+  | otherwise = battle b >>= invade
